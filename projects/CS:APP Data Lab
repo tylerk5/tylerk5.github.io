@@ -1,0 +1,230 @@
+ 
+  Some of the problems restrict the set of allowed operators even further.
+  Each "Expr" may consist of multiple operators. You are not restricted to
+  one operator per line.
+
+  You are expressly forbidden to:
+  1. Use any control constructs such as if, do, while, for, switch, etc.
+  2. Define or use any macros.
+  3. Define any additional functions in this file.
+  4. Call any functions.
+  5. Use any other operations, such as &&, ||, -, or ?:
+  6. Use any form of casting.
+  7. Use any data type other than int.  This implies that you
+     cannot use arrays, structs, or unions.
+
+ 
+  You may assume that your machine:
+  1. Uses 2s complement, 32-bit representations of integers.
+  2. Performs right shifts arithmetically.
+  3. Has unpredictable behavior when shifting if the shift amount
+     is less than 0 or greater than 31.
+
+
+EXAMPLES OF ACCEPTABLE CODING STYLE:
+  /*
+   * pow2plus1 - returns 2^x + 1, where 0 <= x <= 31
+   */
+  int pow2plus1(int x) {
+     /* exploit ability of shifts to compute powers of 2 */
+     return (1 << x) + 1;
+  }
+
+  /*
+   * pow2plus4 - returns 2^x + 4, where 0 <= x <= 31
+   */
+  int pow2plus4(int x) {
+     /* exploit ability of shifts to compute powers of 2 */
+     int result = (1 << x);
+     result += 4;
+     return result;
+  }
+
+/*
+ * STEP 2: Modify the following functions according the coding rules.
+ * 
+ *   IMPORTANT. TO AVOID GRADING SURPRISES:
+ *   1. Use the dlc compiler to check that your solutions conform
+ *      to the coding rules.
+ *   2. Use the BDD checker to formally verify that your solutions produce 
+ *      the correct answers.
+ */
+
+
+#endif
+/* Copyright (C) 1991-2022 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <https://www.gnu.org/licenses/>.  */
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+/* wchar_t uses Unicode 10.0.0.  Version 10.0 of the Unicode Standard is
+   synchronized with ISO/IEC 10646:2017, fifth edition, plus
+   the following additions from Amendment 1 to the fifth edition:
+   - 56 emoji characters
+   - 285 hentaigana
+   - 3 additional Zanabazar Square characters */
+//1
+/* 
+ * bitNor - ~(x|y) using only ~ and & 
+ *   Example: bitNor(0x6, 0x5) = 0xFFFFFFF8
+ *   Legal ops: ~ &
+ *   Max ops: 8
+ *   Rating: 1
+ */
+int bitNor(int x, int y) {
+  // Using De Morgan's Law so ~(x|y) is  equivalent to (~x) & (~y)
+  return (~x) & (~y);
+}
+/* 
+ * TMax - return maximum two's complement integer 
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 4
+ *   Rating: 1
+ */
+int tmax(void) {
+  // Exploiting two's complement shifting and how it deals with ~0
+  return ~((~0) << 31);
+}
+//2
+/* 
+ * implication - return x -> y in propositional logic - 0 for false, 1
+ * for true
+ *   Example: implication(1,1) = 1
+ *            implication(1,0) = 0
+ *   Legal ops: ! ~ ^ |
+ *   Max ops: 5
+ *   Rating: 2
+ */
+int implication(int x, int y) {
+  // Using De Morgan's Law again, just to go from !(x && !y) to what we have
+  return (!x) | y;
+}
+/* 
+ * dividePower2 - Compute x/(2^n), for 0 <= n <= 30
+ *  Round toward zero
+ *   Examples: dividePower2(15,1) = 7, dividePower2(-33,4) = -2
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 15
+ *   Rating: 2
+ */
+int dividePower2(int x, int n) {
+  // We abuse right shift here, and since we are assuming it shifts arithmetically, we don't have to worry abt positive or negative.
+  int sign = x >> 31;
+  int bias = (1 << n) - 1;
+  return (x + (sign & bias) >> n);
+}
+/* 
+ * isNegative - return 1 if x < 0, return 0 otherwise 
+ *   Example: isNegative(-1) = 1.
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 6
+ *   Rating: 2
+ */
+int isNegative(int x) {
+  // Since we are assuming 32-bit, we only need that 1st bit. Checking that with 1 will return 1 if negative, a 0 if positive or 0.
+  return (x >> 31) & 1;
+  
+}
+//3
+/* 
+ * conditional - same as x ? y : z 
+ *   Example: conditional(2,4,5) = 4
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 16
+ *   Rating: 3
+ */
+int conditional(int x, int y, int z) {
+  // Checking if !x - 1 = 0, and if it does, returns z, if it doesn't, returns y
+  int cond = (!x) - 1;
+  return (cond & y) | (~cond & z);
+  
+}
+/* 
+ * rotateRight - Rotate x to the right by n
+ *   Can assume that 0 <= n <= 31
+ *   Examples: rotateRight(0x87654321,3) = 0x32187654
+ *   Legal ops: ~ & ^ | + << >> !
+ *   Max ops: 25
+ *   Rating: 3 
+ */
+int rotateRight(int x, int n) {
+  // Takes n least significant bits, stores them, and then shifts most significant 32-n bits right, and tags on the n bits to the front of the result. 
+  int leftshift = (32 + (~n + 1)) & 31; // figures out how many bits we keep from right side
+  int left = x << leftshift;
+  int mask = ~((~0) << leftshift);
+  int right = (x >> n) & mask;
+  int result = (left|right);
+  return result; 
+}
+//4
+/* 
+ * absVal - absolute value of x
+ *   Example: absVal(-1) = 1.
+ *   You may assume -TMax <= x <= TMax
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 10
+ *   Rating: 4
+ */
+int absVal(int x) {
+  // Finds sign by shifting to sign bit, flips the sign iff sign is 1, and then adds the flipped sign bit and 1. 
+  int sign = x >> 31;
+  int flip = (x ^ sign);
+  return flip + (sign & 1);
+} 
+/* 
+ * bang - Compute !x without using !
+ *   Examples: bang(3) = 0, bang(0) = 1
+ *   Legal ops: ~ & ^ | + << >>
+ *   Max ops: 12
+ *   Rating: 4 
+ */
+int bang(int x) {
+  // Figure out if the sign bit is 1 for either the positive or negative of x, and if x != 0 than one of the two will be 1. 
+  int sign = (x >> 31) || ((~x + 1) >> 31);
+  return (sign ^ 1) & 1;
+}
+/* 
+ * greatestBitPos - return a mask that marks the position of the
+ *               most significant 1 bit. If x == 0, return 0
+ *   Example: greatestBitPos(96) = 0x40
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 70
+ *   Rating: 4 
+ */
+int greatestBitPos(int x) {
+  // I used a technique called OR-shifting, which is basically just shifting the given binary, shifting it, then doing the OR on x and the shifted binary. From there, we AND mask and ~(mask >> 1) so we don't get rid of the MSB. 
+  int mask = x;
+  int negative_mask = x >> 31;
+  mask |= mask >> 1;
+  mask |= mask >> 2;
+  mask |= mask >> 4;
+  mask |= mask >> 8;
+  mask |= mask >> 16;
+  mask = mask & ~(mask >> 1);
+  mask |= (negative_mask & 0x80000000);
+  return mask; 
+}
