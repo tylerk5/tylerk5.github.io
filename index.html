@@ -47,16 +47,25 @@ title: Home
 </div>
 
 <a href="assets/Resume - Tyler Kennedy.pdf" target="_blank" style="
-  display: inline-block;
-  color: white !important;
-  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333; /* Darker to match the Tactile header */
+  background-image: linear-gradient(rgba(255,255,255,0.05), rgba(0,0,0,0.1));
+  color: #fff !important;
+  padding: 12px 25px;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 4px; /* More angular, matching Tactile's cards */
   font-weight: bold;
-  margin-top: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  transition: 0.3s;">
-  📄 Download Resume (PDF)
+  font-family: 'Navel', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  text-transform: uppercase; /* Tactile uses uppercase for impact */
+  letter-spacing: 1px;
+  border: 1px solid #111;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.5);
+  cursor: pointer;
+">
+  <svg style="margin-right: 10px;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+  Download Resume
 </a>
 
 <style>
