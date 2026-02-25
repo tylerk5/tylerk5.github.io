@@ -40,3 +40,10 @@ Finally, by using `mask & ~(mask >> 1)`, I was able to isolate just that origina
 
 ---
 *Note: Full source code is kept in a private repository to maintain academic integrity. Feel free to reach out if you'd like to discuss the logic further!*
+---
+
+<div style="margin-top: 50px; text-align: center;">
+  <a href="./" class="btn" style="background-color: #0366d6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+    ← Back to Home
+  </a>
+</div>
